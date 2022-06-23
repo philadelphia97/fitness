@@ -16,6 +16,9 @@ async function getRoutineActivitiesByRoutine({id}) {
 }
 
 async function updateRoutineActivity ({id, ...fields}) {
+  try {
+    
+  }
 }
 
 async function destroyRoutineActivity(id) {
