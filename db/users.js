@@ -27,20 +27,23 @@ async function createUser({ username, password }) {
   }
 }
 async function getUser({ username, password }) {
-  try {
-    getUserByUsername()
-    const hashedPassword = await bcrypt.hash(password, SALT_COUNT)
-    const match = await bcrypt.compare(password, hashedPassword)
-    if(match) {
-      return username
-    }
-    if (!match) {
-      return null
-    }
+  if (!username || !password) {
+    return;
+  }
 
+  try {
+    const user = await getUserByUsername(username);
+    if(!user) return;
+    const hashedPassword = user.password;
+    const passwordsMatch = await bcrypt.compare(password, hashedPassword);
+    if(!passwordsMatch) return;
+    delete user.password;
+    return user;
   } catch (error) {
     console.error(error)
+    throw error;
   }
+
 }
 
 async function getUserById(userId) {
@@ -56,7 +59,7 @@ async function getUserById(userId) {
     if (!user) {
       return null;
     }
-
+    delete user.password;
     return user;
   } catch (error) {
     console.error(error)
