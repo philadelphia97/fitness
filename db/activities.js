@@ -52,7 +52,23 @@ async function getActivityByName(name) {
   }
 }
 
-async function attachActivitiesToRoutines(routines) {}
+async function attachActivitiesToRoutines(routines) {
+  //take in list of routines
+  
+  // limit our activities query below to just these routines
+
+  //get activitys for these routines
+
+  /**
+   * activity {id: 1, name: pushups } ---> routineActivities{routineId, activityId}
+
+   New Copy ==> [{id, name, number, routineId}]
+
+  */
+
+   //iterate through routines / For each -> figure out which activites match routineID to routine.id
+   //add those activites to the current routine
+}
 
 // select and return an array of all activities
 async function createActivity({ name, description }) {
