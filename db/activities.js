@@ -53,21 +53,20 @@ async function getActivityByName(name) {
 }
 
 async function attachActivitiesToRoutines(routines) {
-  //take in list of routines
-  
-  // limit our activities query below to just these routines
-
-  //get activitys for these routines
-
-  /**
-   * activity {id: 1, name: pushups } ---> routineActivities{routineId, activityId}
-
-   New Copy ==> [{id, name, number, routineId}]
-
-  */
-
-   //iterate through routines / For each -> figure out which activites match routineID to routine.id
-   //add those activites to the current routine
+  const routineMap = routines.map(routine => (routine.id))
+  const mapJoin = routines.map((_index, index) =>`$${index+1}).join(', ')`)
+ try {
+  const { rows: activities } = await client.query(`
+    SELECT id,
+    FROM activities,
+    JOIN routine_activities ON routine_activities."activityId" = activities.id',
+    WHERE routine_activities."routineId" IN (${mapJoin});
+  `, routineMap)
+  for( const routine of returnRoutine) 
+  return returnRoutine;
+ } catch (error) {
+  console.error
+ }
 }
 
 // select and return an array of all activities
