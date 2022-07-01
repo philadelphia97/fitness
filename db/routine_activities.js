@@ -3,12 +3,8 @@ const client = require('./client')
 async function getRoutineActivityById(id){
 }
 
-async function addActivityToRoutine({
-  routineId,
-  activityId,
-  count,
-  duration,
-}) {
+async function addActivityToRoutine(
+) {
     
 }
 
@@ -16,9 +12,6 @@ async function getRoutineActivitiesByRoutine({id}) {
 }
 
 async function updateRoutineActivity ({id, ...fields}) {
-  try {
-    
-  }
 }
 
 async function destroyRoutineActivity(id) {
