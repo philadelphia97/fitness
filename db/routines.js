@@ -69,6 +69,7 @@ async function createRoutine({creatorId, isPublic, name, goal}) {
 }
 
 async function updateRoutine({id, ...fields}) {
+  
 }
 
 async function destroyRoutine(id) {

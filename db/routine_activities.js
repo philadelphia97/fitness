@@ -3,8 +3,7 @@ const client = require('./client')
 async function getRoutineActivityById(id){
 }
 
-async function addActivityToRoutine(
-) {
+async function addActivityToRoutine() {
     
 }
 

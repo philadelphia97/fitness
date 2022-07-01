@@ -44,6 +44,7 @@ async function getUser({ username, password }) {
     console.error(error)
     throw error;
   }
+
 }
 
 async function getUserById(userId) {
