@@ -53,20 +53,24 @@ async function getActivityByName(name) {
 }
 
 async function attachActivitiesToRoutines(routines) {
-  const routineMap = routines.map(routine => (routine.id))
-  const mapJoin = routines.map((_index, index) =>`$${index+1}).join(', ')`)
- try {
-  const { rows: activities } = await client.query(`
-    SELECT id,
-    FROM activities,
-    JOIN routine_activities ON routine_activities."activityId" = activities.id',
-    WHERE routine_activities."routineId" IN (${mapJoin});
-  `, routineMap)
-  for( const routine of returnRoutine) 
-  return returnRoutine;
- } catch (error) {
-  console.error
- }
+  try {
+    const { rows } = await client.query(`
+      SELECT activities.*, routine_activities.id AS "routineActivityId", routine_activities.count, routine_activities.duration, routine_activities."routineId", routine_activities."activityId"
+      FROM activities 
+      JOIN routine_activities ON routine_activities."activityId" = activities.id;
+    `);
+    let allRoutines = [];
+    for (let i = 0; i < routines.length; i++) {
+      let currentRoutine = routines[i];
+      currentRoutine.activities = rows.filter(
+        (act) => act.routineId === currentRoutine.id
+      );
+      allRoutines.push(currentRoutine);
+    }
+    return allRoutines;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // select and return an array of all activities

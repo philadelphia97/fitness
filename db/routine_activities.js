@@ -1,6 +1,23 @@
 const client = require("./client");
 
-async function getRoutineActivityById(id) {}
+async function getRoutineActivityById(id) {
+  try {
+    const {
+      rows: [routine_activities],
+    } = await client.query(
+      `
+      SELECT *
+      FROM routine_activities
+      WHERE id=$1;
+    `,
+      [id]
+    );
+    console.log('routine_activities', routine_activities)
+    return routine_activities;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 async function addActivityToRoutine({
   routineId,
@@ -9,7 +26,7 @@ async function addActivityToRoutine({
   duration,
 }) {
   try {
-    const { rows: routine_activities } = await client.query(
+    const { rows: [routine_activities] } = await client.query(
       `
      INSERT INTO routine_activities("routineId", "activityId", "count", "duration")
      VALUES ($1, $2, $3, $4)
