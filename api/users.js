@@ -45,7 +45,7 @@ router.post("/register", async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
-    console.log("jordan data--------");
+    console.log("Phil data--------");
     const _user = await getUserByUsername(username);
 
     if (_user) {
