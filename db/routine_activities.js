@@ -12,7 +12,6 @@ async function getRoutineActivityById(id) {
     `,
       [id]
     );
-    console.log('routine_activities', routine_activities)
     return routine_activities;
   } catch (error) {
     console.error(error);
@@ -40,19 +39,68 @@ async function addActivityToRoutine({
   }
 }
 
-// async function getRoutineActivitiesByRoutine({ id }) {}
+async function getRoutineActivitiesByRoutine({ id }) {
+  try {
+    const {
+      rows: routine_activities,
+    } = await client.query(
+      `
+      SELECT *
+      FROM routine_activities
+      WHERE "routineId"=${id};
+    `,
+    );
+    return routine_activities;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-// async function updateRoutineActivity({ id, ...fields }) {}
+async function updateRoutineActivity({ id, ...fields }) {
+  const setString = Object.keys(fields).map(
+    (key, index) => `"${ key }"=$${ index + 1 }`
+  ).join(', ');
 
-// async function destroyRoutineActivity(id) {}
+  
+  if (setString.length === 0) {
+    return;
+  }
+
+  try {
+    const { rows: [ routine ] } = await client.query(`
+      UPDATE routine_activities
+      SET ${ setString }
+      WHERE id=${ id }
+      RETURNING *;
+    `, Object.values(fields));
+
+    return routine;
+  } catch (error) {
+    console.error(error)
+    throw error;
+  }
+}
+
+async function destroyRoutineActivity(id) {
+  try {
+    const { rows } = await client.query(`
+      DELETE FROM routine_activities
+      WHERE id=${id};
+    `)
+    return rows;
+  } catch (error) {
+    console.error(error)
+    throw error;
+  }
+}
 
 // async function canEditRoutineActivity(routineActivityId, userId) {}
 
 module.exports = {
   getRoutineActivityById,
   addActivityToRoutine,
-  // getRoutineActivitiesByRoutine,
-  // updateRoutineActivity,
-  // destroyRoutineActivity,
+  getRoutineActivitiesByRoutine,
+  updateRoutineActivity,
+  destroyRoutineActivity,
   // canEditRoutineActivity,
 };
