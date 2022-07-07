@@ -62,8 +62,8 @@ async function attachActivitiesToRoutines(routines) {
     JOIN routine_activities ON routine_activities."activityId" = activities.id',
     WHERE routine_activities."routineId" IN (${mapJoin});
   `, routineMap)
-  for( const routine of returnRoutine) 
-  return returnRoutine;
+  for( const routine of routine) 
+  return activities;
  } catch (error) {
   console.error
  }
@@ -122,7 +122,7 @@ module.exports = {
   getAllActivities,
   getActivityById,
   getActivityByName,
-  // attachActivitiesToRoutines,
+  attachActivitiesToRoutines,
   createActivity,
   updateActivity,
 };

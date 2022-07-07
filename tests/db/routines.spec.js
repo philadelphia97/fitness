@@ -369,7 +369,7 @@ describe("DB Routines", () => {
   });
 
   describe("createRoutine", () => {
-    fit("creates and returns the new routine", async () => {
+    it("creates and returns the new routine", async () => {
       const user = await createFakeUser();
       const routine = await createRoutine({
         creatorId: user.id,
