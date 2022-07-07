@@ -1,55 +1,31 @@
-const { promise } = require('bcrypt/promises');
-const client = require('./client');
-//double check
-async function getRoutineById(id){
+const { attachActivitiesToRoutines } = require("./activities");
+const client = require("./client");
+
+async function getRoutineById(id) {
   try {
-    const { rows: [ routines ] } = await client.query(`
-      SELECT id, "creatorId", "isPublic", name, goal
-      FROM routines
-      WHERE id=${ id };
-    `);
-
-    if (!routines) {
-      throw {
-        name: "UserNotFoundError",
-        message: "A user with that id does not exist"
-      }
-    }
-
-    routines.posts = await getRoutinesWithoutActivities(id);
-
-    return routines;
-  } catch (error) {
-    console.error(error)
-    throw error;
-  }
-}
-//this is probably good but double check
-async function getRoutinesWithoutActivities(){
-  try {
-    const {rows} = await client.query(
+    const { rows: [routine] } = await client.query(
       `
-      SELECT id, "creatorId", "isPublic", name, goal
-      from routines;
-      `
-    );
-    return rows;
-  } catch (error) {
-    console.error(error)
-    throw error;
-  }
-}
-//think it's good but doble check
-async function getAllRoutines(attachActivitiesToRoutines) {
-  try {
-    const {rows} = await client.query(`
     SELECT *
     FROM routines
-    JOIN users ON routines."creatorId" = user.id
-    `)
-    attachActivitiesToRoutines(rows)
+    WHERE id=$1;
+    `,
+      [id]
+    );
+    return routine;
   } catch (error) {
-    console.error(error)
+    console.error(error);
+  }
+}
+
+async function getRoutinesWithoutActivities() {
+  try {
+    const routines = await client.query(`
+      SELECT *
+      FROM routines;    
+    `);
+    return routines.rows;
+  } catch (error) {
+    console.error(error);
   }
 }
 //double check but needs work
@@ -64,72 +40,58 @@ async function getAllRoutinesByUser({username}) {
   const routinesByUser = await Promise.all(routines.map(
     routines => getRoutineById( routines.id )));
 
-    
-    return routinesByUser
+async function getAllRoutines() {
+  try {
+    const { rows } = await client.query(`
+      SELECT routines.*, users.username AS "creatorName"
+      FROM routines
+      JOIN users ON routines."creatorId" = users.id;
+    `);
+     const routines = await attachActivitiesToRoutines(rows);
+    return routines;
   } catch (error) {
-    console.error(error)
+    console.error(error);
+    throw error;
   }
-
 }
-//this needs work
-async function getPublicRoutinesByUser({
-  username
-}) {
-try {
-  const  {rows : [routines]} = await client.query(`
-  SELECT id, "creatorId", "isPublic", name, goal
-  WHERE user=${username}
-  RETURNING*;
-  `)
 
-  return routines;
   
-} catch (error) {
-  console.error(error)
-  throw error
+
 }
-}
-//this is probably good but double check
+
 async function getAllPublicRoutines() {
   try {
-    const {rows} = await client.query(`
-    SELECT id, "creatorId", "isPublic", name, goal
-    FROM routines
+    const { rows }  = await client.query(`
+      SELECT routines.*, users.username AS "creatorName"
+      FROM routines
+      JOIN users ON routines."creatorId" = users.id
+      WHERE "isPublic" = TRUE;
     `)
-
-    return rows;
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
-
-}
-
-//this needs work
-async function getPublicRoutinesByActivity({id}) {
-  try {
-    const  {rows : [routines]} = await client.query(`
-  SELECT id, "creatorId", "isPublic", name, goal
-  WHERE id=${id}
-  RETURNING*;
-  `)
-
-  return routines;
-    
+    const routines = await attachActivitiesToRoutines(rows);
+    return routines;
   } catch (error) {
     console.error(error)
     throw error;
   }
 }
 
+
+    
+  
+
 async function createRoutine({creatorId, isPublic, name, goal}) {
   try {
-  const { rows: [routine]} = await client.query(`
-  INSERT INTO routines("creatorId", "isPublic", name, goal)
-  VALUES($1, $2, $3, $4)
-  RETURNING *;
-  `, [creatorId, isPublic, name, goal]);
-  return routine;
+    const {
+      rows: [routine],
+    } = await client.query(
+      `
+      INSERT INTO routines("creatorId", "isPublic", "name", "goal")
+      VALUES ($1, $2, $3, $4)
+      RETURNING *;
+    `,
+      [creatorId, isPublic, name, goal]
+    );
+    return routine;
   } catch (error) {
     console.error(error)
     throw error;

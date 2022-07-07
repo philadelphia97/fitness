@@ -132,6 +132,7 @@ describe("DB Routines", () => {
       const routine = routines.find(
         (routine) => routine.id === fakeRoutine.id
       );
+      console.log("routine", routine, "fakeActivity", fakeActivity)
       expectRoutineToContainActivity(routine, fakeActivity);
       expectRoutineToContainActivity(routine, fakeActivity2);
     });

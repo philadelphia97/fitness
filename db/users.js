@@ -68,7 +68,7 @@ async function getUserById(userId) {
   }
 }
 
-async function getUserByUsername(userName) {
+async function getUserByUsername(username) {
     try {
       const {
         rows: [user],
@@ -78,7 +78,7 @@ async function getUserByUsername(userName) {
         FROM users
         WHERE username=$1;
       `,
-        [userName]
+        [username]
       );
   
       return user;
