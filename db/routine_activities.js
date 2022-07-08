@@ -33,6 +33,8 @@ async function addActivityToRoutine({
      `,
       [routineId, activityId, count, duration]
     );
+
+    console.log('routine_activities',routine_activities)
     return routine_activities;
   } catch (error) {
     console.error(error);
@@ -95,6 +97,7 @@ async function destroyRoutineActivity(id) {
 }
 
 async function canEditRoutineActivity() {
+
 }
 
 module.exports = {

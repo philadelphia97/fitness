@@ -1,26 +1,31 @@
 const client = require("./client");
 const util = require("./utils");
 
-// database functions
+
 async function getAllActivities() {
   try {
+    //destructure rows
     const { rows } = await client.query(
+      //select everything from activites
       `
       SELECT *
       FROM activities;
     `
     );
+    //return those rows
     return rows;
   } catch (error) {
     console.error(error);
   }
 }
-
+//pass in id
 async function getActivityById(id) {
   try {
     const {
+      //destructure rows and access activity column
       rows: [activity],
     } = await client.query(
+
       `
       SELECT *
       FROM activities
@@ -28,15 +33,17 @@ async function getActivityById(id) {
     `,
       [id]
     );
+    //return that activity
     return activity;
   } catch (error) {
     console.error(error);
   }
 }
-
+//pass in name
 async function getActivityByName(name) {
   try {
     const {
+      //destructure the rows and access activity column
       rows: [activity],
     } = await client.query(
       `
@@ -46,20 +53,24 @@ async function getActivityByName(name) {
     `,
       [name]
     );
+    //return those activites
     return activity;
   } catch (error) {
     console.error(error);
   }
 }
-
+//pass in routines
 async function attachActivitiesToRoutines(routines) {
   try {
-    const { rows } = await client.query(`
-      SELECT activities.*, routine_activities.id AS "routineActivityId", routine_activities.count, routine_activities.duration, routine_activities."routineId", routine_activities."activityId"
+    //destructure the rows
+    const { rows } = await client.query(
+      `SELECT activities.*, routine_activities.id AS "routineActivityId", routine_activities.count, routine_activities.duration, routine_activities."routineId", routine_activities."activityId"
       FROM activities 
       JOIN routine_activities ON routine_activities."activityId" = activities.id;
     `);
+    //variable allRoutines empty array
     let allRoutines = [];
+    //loop thru
     for (let i = 0; i < routines.length; i++) {
       let currentRoutine = routines[i];
       currentRoutine.activities = rows.filter(

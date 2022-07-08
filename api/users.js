@@ -1,39 +1,28 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const { createUser, getUserByUsername, getUserById } = require("./users");
-const { userTakenError, PasswordTooShortError } = require("../errors");
+const {
+  createUser,
+  getUser,
+  getUserById,
+  getUserByUsername
+} = require('../db');
+const { userTakenError, UserDoesNotExistError } = require("../errors");
+
 
 // POST /api/users/login
-router.post("/login", async (req, res, next) => {
-  const { username, password } = req.body;
-
+router.post('/login', async (req, res, next) => {
   try {
-    console.log("this is the function", getUserByUsername)
-    const user = await getUserByUsername(username);
-
-    if (user && user.password == password) {
-      const token = jwt.sign(
-        {
-          id: user.id,
-          username,
-        },
-        process.env.JWT_SECRET
-      );
-      //create token & return to user
-      res.send({
-        message: "You're logged in!",
-        token,
-      });
-    } else {
-      next({
-        name: "IncorrectCredentialsError",
-        message: "Username or password is incorrect",
-      });
-    }
+      const user = await getUser(req.body)
+      const confirmation = {
+          message: "you're logged in!",
+          token: user.token
+      }
+      delete user.token;
+      confirmation.user = user
+      res.send(confirmation);
   } catch (error) {
-    console.error(error);
-    next(error);
+      next(error)
   }
 });
 
@@ -45,8 +34,9 @@ router.post("/register", async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
-    console.log("Phil data--------");
+    console.log("Phils data");
     const _user = await getUserByUsername(username);
+    
 
     if (_user) {
       next(userTakenError);
@@ -82,6 +72,15 @@ router.post("/register", async (req, res, next) => {
 });
 
 // GET /api/users/me
+router.get("/me", async (req, res, next) => {
+try {
+  res.send(req.user)
+
+} catch (UserDoesNotExistError) {
+  console.error(this.name)
+  next(this.name);
+}
+})
 
 // GET /api/users/:username/routines
 

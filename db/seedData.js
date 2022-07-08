@@ -54,8 +54,6 @@ async function createTables() {
     
     await client.query(`CREATE TABLE routine_activities (
         id SERIAL PRIMARY KEY,
-        "routineId" INTEGER FOREIGN routines(id) KEY,
-        "activityId" INTEGER FOREIGN activites(id) KEY,
         "routineId" INTEGER REFERENCES routines(id),
         "activityId" INTEGER REFERENCES activities(id),
         duration INTEGER,
