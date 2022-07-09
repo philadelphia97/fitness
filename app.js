@@ -10,10 +10,11 @@ app.use(express.json());
 app.use(cors());
 
 const apiRouter = require("./api");
+const { Pool } = require("pg/lib");
 app.use("/api", apiRouter);
 
 app.listen(PORT, () => {
-  const client = new client(process.env.DATABASE_URL || 'postgres://localhost:5432/fitness-dev');
+  const client = new Pool(process.env.DATABASE_URL || 'postgres://localhost:5432/fitness-dev');
   client.connect();
   console.log(`Listening on port ${PORT}`);
 })
