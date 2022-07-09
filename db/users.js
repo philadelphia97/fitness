@@ -8,6 +8,7 @@ const SALT_COUNT = 8;
 
 // user functions
 async function createUser({ username, password }) {
+  console.log("trying to create user", username, password)
   const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
   try {
     const {
@@ -21,6 +22,7 @@ async function createUser({ username, password }) {
     `,
       [username, hashedPassword]
     );
+    console.log(user)
     return user;
   } catch (error) {
     console.error(error);

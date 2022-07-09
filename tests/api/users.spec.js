@@ -44,6 +44,7 @@ describe("/api/users", () => {
         password: faker.internet.password(),
       };
       // Register the user
+      console.log("registering user", fakeUserData)
       const response = await request(app)
         .post("/api/users/register")
         .send(fakeUserData);

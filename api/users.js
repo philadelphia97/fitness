@@ -30,38 +30,38 @@ router.post('/login', async (req, res, next) => {
 
 
 
-router.post("/register", async (req, res, next) => {
+router.post('/register', async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
-    console.log("Phils data");
     const _user = await getUserByUsername(username);
+    
     
 
     if (_user) {
       next(userTakenError);
     }
 
+
     const user = await createUser({
-      username,
-      password,
+      username: username,
+      password: password
     });
+
 
     const token = jwt.sign(
       {
         id: user.id,
-        username,
+        username: user.username
       },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1w",
-      }
+      process.env.JWT_SECRET
     );
+    console.log()
 
     const data = {
-      message: "Thanks for registering",
-      token,
-      user,
+      message: "Thank you for registering",
+      token: token,
+      user: user
     };
 
     res.send(data);
